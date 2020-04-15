@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import technique.innso.business.domain.Customer;
+import technique.innso.business.domain.Message;
 import technique.innso.business.mapper.CustomerMapper;
 import technique.innso.business.service.CustomerService;
 import technique.innso.dao.entity.CustomerEntity;
@@ -14,6 +15,8 @@ import technique.innso.dao.repository.MessageRepository;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,35 +32,57 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerMapper mapper;
 
     public Long createCustomer(Customer customer) {
-        CustomerEntity entity = mapper.toEntity(customer);
+        if (customer != null) {
+            CustomerEntity entity = mapper.toEntity(customer);
 
-        entity.setOpeningDate(ZonedDateTime.now());
-        CustomerEntity entitySaved = repository.save(entity);
+            entity.setOpeningDate(ZonedDateTime.now());
+            CustomerEntity entitySaved = repository.save(entity);
+            saveMessage(customer.getMessages(), entitySaved);
 
-        if(!CollectionUtils.isEmpty(customer.getMessages())) {
-            List<MessageEntity> messageEntities = customer.getMessages()
-                    .stream()
-                    .map(message -> {
-                        MessageEntity messageEntity = messageRepository.findById(message.getIdMessage()).get();
-                        messageEntity.setCustomer(entitySaved);
-                        return messageEntity;
-                    })
-                    .collect(Collectors.toList());
-            messageRepository.saveAll(entity.getMessages());
+            return entitySaved.getIdCustomer();
         }
-        return entitySaved.getIdCustomer();
+        return null;
+    }
+
+    private void saveMessage(List<Message> messages, CustomerEntity entitySaved) {
+        if (!CollectionUtils.isEmpty(messages)) {
+            List<MessageEntity> messageEntities = messages
+                    .stream()
+                    .map(message -> getMessageById(message.getIdMessage(), entitySaved))
+                    .filter(messageEntity -> Objects.nonNull(messageEntity))
+                    .collect(Collectors.toList());
+            if (!CollectionUtils.isEmpty(messageEntities)) {
+                messageRepository.saveAll(messageEntities);
+            }
+        }
+    }
+
+    private MessageEntity getMessageById(Long idMessage, CustomerEntity entitySaved) {
+        Optional<MessageEntity> optionalMessage = messageRepository.findById(idMessage);
+        if (optionalMessage.isPresent()) {
+            MessageEntity messageEntity = optionalMessage.get();
+            messageEntity.setCustomer(entitySaved);
+            return messageEntity;
+        }
+        return null;
     }
 
     @Override
     public void updateCustomer(Customer customerToUpdate) {
-        CustomerEntity entity = repository.findById(customerToUpdate.getIdCustomer()).get();
-        if(StringUtils.isNotEmpty(customerToUpdate.getName())) {
-            entity.setName(customerToUpdate.getName());
+        if (customerToUpdate != null) {
+            Optional<CustomerEntity> optional = repository.findById(customerToUpdate.getIdCustomer());
+            if (optional.isPresent()) {
+                CustomerEntity entity = optional.get();
+                if (StringUtils.isNotEmpty(customerToUpdate.getName())) {
+                    entity.setName(customerToUpdate.getName());
+                }
+                if (StringUtils.isNotEmpty(customerToUpdate.getReference())) {
+                    entity.setReference(customerToUpdate.getReference());
+                }
+                repository.save(entity);
+            }
         }
-        if(StringUtils.isNotEmpty(customerToUpdate.getReference())) {
-            entity.setReference(customerToUpdate.getReference());
-        }
-        repository.save(entity);
+
     }
 
     @Override
@@ -67,6 +92,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer getCustomer(Long idCustomer) {
-        return mapper.toDomain(repository.findById(idCustomer).get());
+        if (idCustomer != null) {
+            return mapper.toDomain(repository.findById(idCustomer).get());
+        }
+        return null;
     }
 }
