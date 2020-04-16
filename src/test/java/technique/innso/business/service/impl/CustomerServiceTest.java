@@ -44,9 +44,6 @@ public class CustomerServiceTest {
     public void createCustomerWithoutMessageTest() {
         // Given
         Customer customerToCreate = new Customer();
-        customerToCreate.setName("Test");
-        customerToCreate.setOpeningDate(ZonedDateTime.now());
-        customerToCreate.setReference("REF12");
 
         CustomerEntity customerEntity = new CustomerEntity();
         customerEntity.setIdCustomer(1L);
@@ -72,9 +69,6 @@ public class CustomerServiceTest {
     public void createCustomerWithMessageTest() {
         // Given
         Customer customerToCreate = new Customer();
-        customerToCreate.setName("Test");
-        customerToCreate.setOpeningDate(ZonedDateTime.now());
-        customerToCreate.setReference("REF12");
 
         Message message = new Message();
         message.setIdMessage(2L);
@@ -105,9 +99,6 @@ public class CustomerServiceTest {
     public void createCustomerWithIdMessageNoExistTest() {
         // Given
         Customer customerToCreate = new Customer();
-        customerToCreate.setName("Test");
-        customerToCreate.setOpeningDate(ZonedDateTime.now());
-        customerToCreate.setReference("REF12");
 
         Message message = new Message();
         message.setIdMessage(2L);
@@ -153,7 +144,6 @@ public class CustomerServiceTest {
         Customer customerToUpdate = new Customer();
         customerToUpdate.setIdCustomer(1L);
         customerToUpdate.setName("Test");
-        customerToUpdate.setOpeningDate(ZonedDateTime.now());
         customerToUpdate.setReference("REF12");
 
         CustomerEntity entity = new CustomerEntity();
@@ -175,7 +165,6 @@ public class CustomerServiceTest {
         Customer customerToUpdate = new Customer();
         customerToUpdate.setIdCustomer(1L);
         customerToUpdate.setName("Test");
-        customerToUpdate.setOpeningDate(ZonedDateTime.now());
         customerToUpdate.setReference("REF12");
 
         CustomerEntity entity = new CustomerEntity();

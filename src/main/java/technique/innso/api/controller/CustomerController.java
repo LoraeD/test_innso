@@ -29,8 +29,10 @@ public class CustomerController {
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     @ApiOperation(value = "create a customer")
-    @ApiResponses({@ApiResponse(code = 201, message = "OK, the customer was created"),
-            @ApiResponse(code = 404, message = "BAD REQUEST, the json was not acceptable")})
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "OK, the customer was created"),
+            @ApiResponse(code = 404, message = "BAD REQUEST, the json was not acceptable")
+    })
     public ResponseEntity<Object> createCustomer(@ApiParam(value = "the customer to create", required = true) @RequestBody CreateCustomerDTO customer) {
         Long id = service.createCustomer(mapper.toDomain(customer));
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
@@ -40,7 +42,9 @@ public class CustomerController {
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
     @ApiOperation(value = "get all customers")
-    @ApiResponses({@ApiResponse(code = 200, message = "OK, all the customers were returned")})
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK, all the customers were returned")
+    })
     public ResponseEntity<List<GetCustomerDTO>> getCustomers() {
         return ResponseEntity.ok().body(mapper.toDTOs(service.getAllCustomers()));
     }
@@ -48,8 +52,10 @@ public class CustomerController {
     @PutMapping
     @ResponseStatus(code = HttpStatus.OK)
     @ApiOperation(value = "update a customer")
-    @ApiResponses({@ApiResponse(code = 200, message = "OK, the customer was updated"),
-            @ApiResponse(code = 404, message = "BAD REQUEST, the json was not acceptable")})
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK, the customer was updated"),
+            @ApiResponse(code = 404, message = "BAD REQUEST, the json was not acceptable")
+    })
     public void updateCustomer(@ApiParam(value = "the message to update", required = true) @RequestBody UpdateCustomerDTO customerToUpdate) {
         service.updateCustomer(mapper.toDomain(customerToUpdate));
     }

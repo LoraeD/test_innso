@@ -30,8 +30,10 @@ public class MessageController {
     @PostMapping(value = "/messages")
     @ResponseStatus(code = HttpStatus.CREATED)
     @ApiOperation(value = "create a message")
-    @ApiResponses({@ApiResponse(code = 201, message = "OK, the message was created"),
-            @ApiResponse(code = 404, message = "BAD REQUEST, the json was not acceptable")})
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "OK, the message was created"),
+            @ApiResponse(code = 404, message = "BAD REQUEST, the json was not acceptable")
+    })
     public ResponseEntity<Object> createMessage(@ApiParam(value = "the message to create", required = true) @RequestBody CreateMessageDTO messageToCreate)
     {
         Long id = service.createMessage(mapper.toDomain(messageToCreate));
@@ -42,8 +44,10 @@ public class MessageController {
     @PostMapping(value = "customers/{idCustomer}/messages")
     @ResponseStatus(code = HttpStatus.CREATED)
     @ApiOperation(value = "create a message to a customer")
-    @ApiResponses({@ApiResponse(code = 201, message = "OK, the message was created"),
-            @ApiResponse(code = 404, message = "BAD REQUEST, the json was not acceptable")})
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "OK, the message was created"),
+            @ApiResponse(code = 404, message = "BAD REQUEST, the json was not acceptable")
+    })
     public ResponseEntity<Object> createMessage(@ApiParam(value = "the customer's technical identifier", required = true) @PathVariable(name = "idCustomer")Long idCustomer, @ApiParam(value = "the message to create", required = true) @RequestBody CreateMessageDTO messageToCreate)
     {
         Message message = mapper.toDomain(messageToCreate);
